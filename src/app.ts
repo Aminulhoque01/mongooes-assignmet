@@ -3,6 +3,9 @@ import cors from "cors";
 
 const app: Application = express();
 
+//Application routes
+import userRouter from './app/modules/users/user.route'
+
 // using cors
 app.use(cors());
 
@@ -10,10 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extends:true}));
 
-app.get('/', (req:Request, res:Response, next:NextFunction) => {
-    res.send('mongoose assignment-2 running');
 
-    next()
-})
+app.use('/api/v1/user',userRouter)
 
 export default app;
