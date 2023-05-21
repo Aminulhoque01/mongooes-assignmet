@@ -1,5 +1,5 @@
 
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import app from './app';
 
 
@@ -11,11 +11,11 @@ async function main() {
 
     try {
         await mongoose.connect('mongodb://127.0.0.1:27017/mongoose-assignment');
-        // console.log(`Database connection successful`);
+        console.log(`Database connection successful`);
 
-        // app.listen(port, () => {
-        //     console.log(`server is listening on port ${port}`)
-        // })
+        app.listen(port, () => {
+            console.log(`server is listening on port ${port}`)
+        })
 
 
         // interface
@@ -32,6 +32,7 @@ async function main() {
                 location: string;
             };
             reviews: Array<{
+                id:string,
                 username: string;
                 comment: string;
             }>;
@@ -75,14 +76,15 @@ async function main() {
             },
             reviews: [
                 {
-                    id:{
-                        type:String,
-                        required:true,
-                        unique:true,
+                    id: {
+                        type: String,
+                        required: true,
+                        unique: true,
                     },
                     username: {
                         type: String,
                         required: true,
+                        unique: true,
                     },
                     comment: {
                         type: String,
@@ -91,6 +93,31 @@ async function main() {
                 },
             ],
         });
+
+        const BookModel = model<IBook>("Book", BookSchema);
+
+        const createUserToDB= async()=>{
+            const user = new BookModel({
+                title: 'This is best Book in the world',
+                author: 'Ami',
+                genre: "Science fantasy",
+                publicationYear: 2021,
+                rating: 5.00,
+                price: 500,
+                publisher: {
+                    name: 'Ami.com',
+                    location: 'Bangladesh',
+                },
+                reviews:{
+                    id:'0003',
+                    username: 'aminul',
+                    comment: 'good',
+                },
+            });
+            await user.save();
+            console.log(user)
+        }
+        createUserToDB();
 
     } catch (error) {
         console.log(`Failed to connect database`, error);
